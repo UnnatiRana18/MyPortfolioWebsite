@@ -3,68 +3,770 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
-</head>
-<body>
+    <title>Unnati Rana | AI & Frontend Developer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Font: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #030712; /* Tailwind gray-950 */
+            color: #f3f4f6; /* Tailwind gray-100 */
+            scroll-behavior: smooth;
+        }
 
-    <header>
-        <h1>Welcome to My Portfolio</h1>
-        <p>Showcasing My Skills, Projects, and Experience</p>
+        /* Custom scrollbar */
+        body::-webkit-scrollbar {
+            width: 8px;
+        }
+        body::-webkit-scrollbar-track {
+            background: #111827; /* gray-900 */
+        }
+        body::-webkit-scrollbar-thumb {
+            background-color: #3b82f6; /* blue-500 */
+            border-radius: 20px;
+        }
+
+        /* Full-page Hero Animation Canvas (The Unique Feature) */
+        #hero-animation {
+            position: fixed; /* Changed from absolute */
+            top: 0;
+            left: 0;
+            width: 100vw;  /* Changed to viewport width */
+            height: 100vh; /* Changed to viewport height */
+            z-index: 0;    /* Set to 0 to be behind content */
+            opacity: 0.4;  /* Slightly reduced opacity */
+        }
+
+        /* Ensure all content is above the animation */
+        .sticky-nav, main, footer {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 5; /* Above canvas, but below nav */
+        }
+
+        /* Sticky Header with blur */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50; /* Nav is highest z-index */
+            background-color: rgba(3, 7, 18, 0.8); /* gray-950 with opacity */
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #1f2937; /* gray-800 */
+        }
+
+        /* Active nav link style */
+        .nav-link.active {
+            color: #3b82f6; /* blue-500 */
+            font-weight: 600;
+        }
+
+        /* Project & Gallery Card Styles */
+        .card {
+            background-color: #111827; /* gray-900 */
+            border: 1px solid #1f2937; /* gray-800 */
+            border-radius: 0.75rem; /* rounded-xl */
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%; /* Ensure cards in a grid have same height */
+        }
+        .card-link:hover .card { /* Apply hover to card when link is hovered */
+            transform: translateY(-6px);
+            border-color: #3b82f6; /* blue-500 */
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.1);
+        }
+
+        /* Section header style */
+        .section-title {
+            color: #ffffff;
+            font-weight: 800;
+            font-size: 2.25rem; /* 3xl */
+            letter-spacing: -0.025em;
+            margin-bottom: 1rem;
+        }
+        .section-subtitle {
+            font-size: 1.125rem; /* xl */
+            color: #9ca3af; /* gray-400 */
+            max-width: 60ch;
+            margin: 0 auto 3rem auto;
+        }
+
+        /* Tech skill pill */
+        .tech-pill {
+            display: inline-block;
+            background-color: #374151; /* gray-700 */
+            color: #d1d5db; /* gray-300 */
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px; /* rounded-full */
+            font-size: 0.75rem; /* xs */
+            font-weight: 500;
+        }
+        
+        /* Carousel Styles */
+        .carousel-container {
+            overflow: hidden;
+            position: relative;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .carousel-slide {
+            flex: 0 0 100%; /* Mobile: 1 slide */
+            padding: 0 0.5rem;
+            box-sizing: border-box;
+        }
+        @media (min-width: 768px) {
+            .carousel-slide {
+                flex: 0 0 50%; /* Tablet: 2 slides */
+            }
+        }
+        @media (min-width: 1024px) {
+            .carousel-slide {
+                flex: 0 0 33.3333%; /* Desktop: 3 slides */
+            }
+        }
+        .carousel-dots {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem; /* 8px */
+            margin-top: 1.5rem; /* 24px */
+        }
+        .carousel-dot {
+            width: 0.75rem; /* 12px */
+            height: 0.75rem; /* 12px */
+            border-radius: 9999px;
+            background-color: #374151; /* gray-700 */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .carousel-dot.active {
+            background-color: #3b82f6; /* blue-500 */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Full Page Animated Background -->
+    <canvas id="hero-animation"></canvas>
+
+    <!-- Header / Navigation -->
+    <header class="sticky-nav">
+        <nav class="container mx-auto max-w-6xl px-4 py-4 flex justify-between items-center">
+            <a href="#home" class="text-xl font-bold text-white">
+                Unnati Rana
+            </a>
+            <div class="hidden md:flex items-center space-x-6">
+                <a href="#about" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">About</a>
+                <a href="#projects" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">Projects</a>
+                <a href="#events" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">Events</a>
+                <a href="#participation" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">Participation</a>
+                <a href="#certifications" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">Certifications</a>
+                <a href="#contact" class="nav-link text-gray-300 hover:text-blue-400 transition-colors">Contact</a>
+            </div>
+        </nav>
     </header>
 
-    <nav>
-        <ul>
-            <li><a href="#about">About</a></li>
-            <li><a href="#skills">Skills</a></li>
-            <li><a href="#projects">Projects</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
+    <main class="container mx-auto max-w-6xl px-4">
 
-    <section id="about">
-        <h2>About Me</h2>
-        <p>Hello!   I'm  Unnati Rana , a  Computer Science Engineering (CSE) student and a  passionate front-end developer who loves creating beautiful and interactive websites.</p>
-    </section>
+        <!-- Section 1: Hero -->
+        <section id="home" class="relative min-h-screen flex items-center justify-center text-center overflow-hidden">
+            <!-- Content is on top of the fixed canvas -->
+            <div class="hero-content py-20">
+                
+                <!-- Profile Photo -->
+                <img src="https://placehold.co/200x200/3b82f6/ffffff?text=Unnati" 
+                     alt="Unnati Rana"
+                     class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-blue-500/50 mx-auto mb-6 shadow-xl">
+                
+                <h1 class="text-5xl md:text-7xl font-extrabold text-white mb-4">
+                    Hi, I'm <span class="text-blue-500">Unnati Rana</span>
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto">
+                    A Computer Science student passionate about AI Applications, Frontend Development, and Data Visualization.
+                </p>
+                <div class="flex justify-center items-center space-x-5">
+                    <a href="httpsa://linkedin.com/in/unnati-rana-543282300" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors" title="LinkedIn">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                    </a>
+                    <a href="https://github.com/UnnatiRana18" target="_blank" class="text-gray-400 hover:text-white transition-colors" title="GitHub">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.951 0-1.093.39-1.988 1.03-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"/></svg>
+                    </a>
+                    <a href="mailto:ranaunnati223@gmail.com" class="text-gray-400 hover:text-red-400 transition-colors" title="Email">
+                        <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M22 6c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6zm-2 0l-8 5-8-5h16zm0 12H4V8l8 5 8-5v10z"/></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Scroll down indicator -->
+            <a href="#about" class="hero-content absolute bottom-10 left-1/2 -translate-x-1/2 text-gray-400 hover:text-white transition-all animate-bounce" title="Scroll Down">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </a>
+        </section>
 
-    <section id="skills">
-        <h2>Skills</h2>
-        <ul class="skills-list">
-            <li>HTML</li>
-            <li>CSS</li>
-            <li>JavaScript</li>
-            <li>C</li>
-            <li>Python</li>
-        </ul>
-    </section>
+        <!-- Section 2: About Me & Skills -->
+        <section id="about" class="py-20 md:py-32">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
+                <!-- About Me Text -->
+                <div class="space-y-4">
+                    <h2 class="text-3xl font-bold text-white leading-tight">About Me</h2>
+                    <p class="text-lg text-gray-300">
+                        I'm a motivated and detail-oriented Computer Science Engineering student (graduating Oct 2025) from Bengaluru.
+                    </p>
+                    <p class="text-gray-400">
+                        I am skilled in using HTML, CSS, JavaScript, Python, Power BI, and RapidMiner to design scalable, user-focused solutions. I'm passionate about leveraging technology to solve real-world challenges through creativity, collaboration, and continuous learning.
+                    </p>
+                </div>
+                <!-- Skills -->
+                <div>
+                    <h3 class="text-2xl font-bold text-white mb-4">My Technical Skills</h3>
+                    <div classs="space-y-4">
+                        <h4 class="font-semibold text-blue-300 mb-2">Languages & Web</h4>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tech-pill">Python</span>
+                            <span class="tech-pill">JavaScript</span>
+                            <span class="tech-pill">HTML</span>
+                            <span class="tech-pill">CSS</span>
+                            <span class="tech-pill">Java</span>
+                            <span class="tech-pill">C</span>
+                        </div>
+                        <h4 class="font-semibold text-blue-300 mb-2">Data & AI Tools</h4>
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <span class="tech-pill">Power BI</span>
+                            <span class="tech-pill">RapidMiner</span>
+                            <span class="tech-pill">MATLAB</span>
+                        </div>
+                        <h4 class="font-semibold text-blue-300 mb-2">Core Competencies</h4>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-pill">Problem Solving</span>
+                            <span class="tech-pill">Data Visualization</span>
+                            <span class="tech-pill">Team Leadership</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-    <section id="projects">
-        <h2>Projects</h2>
-        <div class="project-card">
-            <h3>Project 1</h3>
-            <p>Interactive website for showcasing portfolio</p>
-            <a href="index.html" target="_blank" class="project-link">View Project</a>
+        <!-- Section 3: Projects -->
+        <section id="projects" class="py-20 md:py-32">
+            <h2 class="section-title text-center">My Projects</h2>
+            <p class="section-subtitle text-center">
+                Here are a few things I've built, focusing on AI and user-centric design.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Project 1: Mitra -->
+                <!-- TODO: Replace "#" with your project's live URL or GitHub link -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                    <div class="card">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Mitra</h3>
+                            <p class="text-gray-400 mb-4">AI companion for mental wellbeing providing anonymous, judgment-free support using NLP and chatbot features.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-pill bg-blue-500/30 text-blue-200">AI</span>
+                                <span class="tech-pill bg-green-500/30 text-green-200">NLP</span>
+                                <span class="tech-pill bg-yellow-500/30 text-yellow-200">Chatbot</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- Project 2: Athelred -->
+                <!-- TODO: Replace "#" with your project's live URL or GitHub link -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                    <div class="card">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Athelred</h3>
+                            <p class="text-gray-400 mb-4">Indian legal document classifier with smart categorization and automated draft management.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-pill bg-blue-500/30 text-blue-200">AI</span>
+                                <span class="tech-pill bg-purple-500/30 text-purple-200">LegalTech</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- Project 3: Devika -->
+                <!-- TODO: Replace "#" with your project's live URL or GitHub link -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                    <div class="card">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">Devika</h3>
+                            <p class="text-gray-400 mb-4">Responsive fashion website integrating AI-based recommendations to enhance customer engagement.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-pill bg-pink-500/30 text-pink-200">Frontend</span>
+                                <span class="tech-pill bg-blue-500/30 text-blue-200">AI</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                <!-- Project 4: NextTrip -->
+                <!-- TODO: Replace "#" with your project's live URL or GitHub link -->
+                <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                    <div class="card">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-white mb-2">NextTrip</h3>
+                            <p class="text-gray-400 mb-4">Smart travel planner predicting ideal trips using budget, season, and preference data with Power BI dashboards.</p>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="tech-pill bg-yellow-500/30 text-yellow-200">Data Visualization</span>
+                                <span class="tech-pill bg-indigo-500/30 text-indigo-200">Power BI</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Section 4: Event Showcase (Carousel) -->
+        <section id="events" class="py-20 md:py-32">
+            <h2 class="section-title text-center">Event Showcase</h2>
+            <p class="section-subtitle text-center">
+                A gallery of events I've organized and managed, including my work as a Google Campus Ambassador.
+            </p>
+            
+            <div class="carousel-container" data-carousel-id="event-carousel">
+                <div class="carousel-track">
+                    <!-- TODO: Replace images, text, and "#" links for your events -->
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/1e40af/ffffff?text=Gemini+Workshop" alt="Gemini Workshop" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Gemini Workshops</h3>
+                                    <p class="text-gray-400 text-sm">Conducting hands-on workshops for Google Gemini.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                         <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/1e3a8a/ffffff?text=AI+Info+Session" alt="AI Info Session" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">AI Info Sessions</h3>
+                                    <p class="text-gray-400 text-sm">Engaging students on the future of AI and Google's tools.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="carousel-slide">
+                         <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/1d4ed8/ffffff?text=Tech+Fest+Coordination" alt="Tech Fest" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Tech Fest Coordination</h3>
+                                    <p class="text-gray-400 text-sm">Organized and managed coding competitions for college tech fest.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 4 (Duplicate 1 for looping) -->
+                    <div class="carousel-slide">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/1e40af/ffffff?text=Gemini+Workshop" alt="Gemini Workshop" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Gemini Workshops</h3>
+                                    <p class="text-gray-400 text-sm">Conducting hands-on workshops for Google Gemini.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="carousel-dots" data-carousel-dots-for="event-carousel"></div>
+            </div>
+        </section>
+
+        <!-- Section 5: Participation Showcase (Carousel) -->
+        <section id="participation" class="py-20 md:py-32">
+            <h2 class="section-title text-center">My Participation</h2>
+            <p class="section-subtitle text-center">
+                Events, hackathons, and workshops I've proudly participated in.
+            </p>
+            
+            <div class="carousel-container" data-carousel-id="participation-carousel">
+                <div class="carousel-track">
+                    <!-- TODO: Replace images, text, and "#" links for your participation -->
+                    <!-- Slide 1 -->
+                    <div class="carousel-slide">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/5b21b6/ffffff?text=Hackathon+Winner" alt="Hackathon" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Smart India Hackathon</h3>
+                                    <p class="text-gray-400 text-sm">Participated as team leader for a social innovation project.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 2 -->
+                    <div class="carousel-slide">
+                         <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/6d28d9/ffffff?text=Data+Science+Meetup" alt="Data Science Meetup" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Data Science Meetup</h3>
+                                    <p class="text-gray-400 text-sm">Attended and networked at Bengaluru Data Science event.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 3 -->
+                    <div class="carousel-slide">
+                         <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/7c3aed/ffffff?text=Web+Dev+Workshop" alt="Web Dev Workshop" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Web Dev Workshop</h3>
+                                    <p class="text-gray-400 text-sm">Completed a 3-day intensive workshop on modern web frameworks.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                    <!-- Slide 4 (Duplicate 1 for looping) -->
+                    <div class="carousel-slide">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="block card-link">
+                            <div class="card">
+                                <img src="https://placehold.co/600x400/5b21b6/ffffff?text=Hackathon+Winner" alt="Hackathon" class="w-full h-48 object-cover">
+                                <div class="p-5">
+                                    <h3 class="text-lg font-semibold text-white">Smart India Hackathon</h3>
+                                    <p class="text-gray-400 text-sm">Participated as team leader for a social innovation project.</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="carousel-dots" data-carousel-dots-for="participation-carousel"></div>
+            </div>
+        </section>
+
+
+        <!-- Section 6: Certifications -->
+        <section id="certifications" class="py-20 md:py-32">
+            <h2 class="section-title text-center">Achievements & Certifications</h2>
+            <p class="section-subtitle text-center">
+                I'm committed to continuous learning and professional development.
+            </p>
+            <div class="max-w-2xl mx-auto space-y-4">
+                <div class="card p-5 flex items-center space-x-4">
+                    <svg class="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    <p class="text-gray-200">Power BI for Business Professionals</p>
+                </div>
+                <div class="card p-5 flex items-center space-x-4">
+                    <svg class="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    <p class="text-gray-200">TechA Linux Programming Foundation</p>
+                </div>
+                <div class="card p-5 flex items-center space-x-4">
+                    <svg class="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    <p class="text-gray-200">MATLAB & Simulink Workshop</p>
+                </div>
+                <div class="card p-5 flex items-center space-x-4">
+                    <svg class="w-6 h-6 text-blue-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                    <p class="text-gray-200">Data Science Training Program</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 7: Contact -->
+        <section id="contact" class="py-20 md:py-32 text-center">
+            <h2 class="section-title text-center">Get In Touch</h2>
+            <p class="section-subtitle text-center">
+                I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.
+            </p>
+            <a href="mailto:ranaunnati223@gmail.com" 
+               class="inline-block bg-blue-600 text-white text-lg font-semibold px-8 py-4 rounded-lg hover:bg-blue-700 transition-colors shadow-lg">
+                Say Hello
+            </a>
+
+            <div class="flex justify-center items-center space-x-5 mt-12">
+                <a href="httpsa://linkedin.com/in/unnati-rana-543282300" target="_blank" class="text-gray-400 hover:text-blue-400 transition-colors" title="LinkedIn">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://github.com/UnnatiRana18" target="_blank" class="text-gray-400 hover:text-white transition-colors" title="GitHub">
+                    <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.165 6.839 9.489.5.092.682-.217.682-.483 0-.237-.009-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.951 0-1.093.39-1.988 1.03-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.379.202 2.398.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.942.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.001 10.001 0 0022 12c0-5.523-4.477-10-10-10z" clip-rule="evenodd"/></svg>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-20">
+        <div class="container mx-auto max-w-6xl px-4 py-6 text-center text-gray-500">
+            &copy; 2025 Unnati Rana. Built with passion.
         </div>
-        <div class="project-card">
-            <h3>Project 2</h3>
-            <p>A Simple Calculator </p>
-            <a href="index1.html" target="_blank" class="project-link">View Project</a>
-        </div>
-    </section>
-
-    <section id="contact">
-        <h2>Contact Me</h2>
-        <p>Email: ranaunnati223@gmail.com</p>
-         <a href="https://github.com/UnnatiRana18" target="_blank" rel="noopener noreferrer"  class="profile-link" >Github </a><br>
-         <a href="https://www.linkedin.com/in/unnati-rana-543282300/" target="_blank" rel="noopener noreferrer"  class="profile-link" >Linkedin </a>
-    </section>
-
-    <footer>
-        <p>© 2025 My Portfolio. All rights reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Hero Canvas Animation (Full Page) ---
+            const canvas = document.getElementById('hero-animation');
+            const ctx = canvas.getContext('2d');
+            let particles = [];
+            let mouse = { x: null, y: null, radius: 150 };
+
+            function resizeCanvas() {
+                // Resize to full window size
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            window.addEventListener('resize', () => {
+                resizeCanvas();
+                initParticles();
+            });
+            resizeCanvas(); // Initial size set
+
+            window.addEventListener('mousemove', (e) => {
+                // No getBoundingClientRect needed as canvas is full screen
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+            window.addEventListener('mouseout', () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+            
+            // Re-initialize particles if window resizes
+            let resizeTimer;
+            window.addEventListener('resize', () => {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(() => {
+                    resizeCanvas();
+                    initParticles();
+                }, 100);
+            });
+
+
+            class Particle {
+                constructor() {
+                    this.x = Math.random() * canvas.width;
+                    this.y = Math.random() * canvas.height;
+                    this.size = Math.random() * 2 + 1;
+                    this.baseX = this.x;
+                    this.baseY = this.y;
+                    this.density = (Math.random() * 30) + 1;
+                    this.color = 'rgba(59, 130, 246, 0.5)'; // blue-500
+                }
+                draw() {
+                    ctx.fillStyle = this.color;
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                update() {
+                    // Mouse interaction
+                    let dx = mouse.x - this.x;
+                    let dy = mouse.y - this.y;
+                    let distance = Math.sqrt(dx * dx + dy * dy);
+                    let forceDirectionX = dx / distance;
+                    let forceDirectionY = dy / distance;
+                    let maxDistance = mouse.radius;
+                    
+                    // Force intensity
+                    let force = (maxDistance - distance) / maxDistance;
+                    if (force < 0) force = 0;
+
+                    let directionX = (forceDirectionX * force * this.density);
+                    let directionY = (forceDirectionY * force * this.density);
+                    
+                    if (distance < mouse.radius) {
+                        // Repel from mouse
+                        this.x -= directionX;
+                        this.y -= directionY;
+                    } else {
+                        // Return to base position
+                        if (this.x !== this.baseX) {
+                            let dx = this.x - this.baseX;
+                            this.x -= dx / 10;
+                        }
+                        if (this.y !== this.baseY) {
+                            let dy = this.y - this.baseY;
+                            this.y -= dy / 10;
+                        }
+                    }
+                    this.draw();
+                }
+            }
+
+            function initParticles() {
+                particles = [];
+                let numberOfParticles = (canvas.width * canvas.height) / 9000;
+                // Cap particle count for performance
+                if (numberOfParticles > 150) numberOfParticles = 150; 
+                for (let i = 0; i < numberOfParticles; i++) {
+                    particles.push(new Particle());
+                }
+            }
+
+            function connectParticles() {
+                let maxDistance = 100;
+                for (let a = 0; a < particles.length; a++) {
+                    for (let b = a + 1; b < particles.length; b++) {
+                        let dx = particles[a].x - particles[b].x;
+                        let dy = particles[a].y - particles[b].y;
+                        let distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < maxDistance) {
+                            ctx.strokeStyle = `rgba(59, 130, 246, ${0.8 - distance / maxDistance})`; // Fades with distance
+                            ctx.lineWidth = 0.5;
+                            ctx.beginPath();
+                            ctx.moveTo(particles[a].x, particles[a].y);
+                            ctx.lineTo(particles[b].x, particles[b].y);
+                            ctx.stroke();
+                        }
+                    }
+                }
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                for (let particle of particles) {
+                    particle.update();
+                }
+                connectParticles();
+                requestAnimationFrame(animate);
+            }
+
+            initParticles();
+            animate();
+
+
+            // --- 2. Active Nav Link on Scroll ---
+            const sections = document.querySelectorAll('section[id]');
+            // Updated to include new "participation" link
+            const navLinks = document.querySelectorAll('.nav-link'); 
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5 // 50% of the section must be visible
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- 3. Smooth Scrolling for Nav Links ---
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // We offset by the header height to avoid hiding the title
+                        const headerOffset = document.querySelector('.sticky-nav').offsetHeight;
+                        const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                        const offsetPosition = elementPosition - headerOffset - 20; // 20px buffer
+
+                        window.scrollTo({
+                            top: offsetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+
+            // --- 4. Carousel Logic ---
+            function initCarousel(carouselId, autoPlayInterval = 5000) {
+                const carousel = document.querySelector(`[data-carousel-id="${carouselId}"]`);
+                if (!carousel) return;
+
+                const track = carousel.querySelector('.carousel-track');
+                const slides = Array.from(track.children);
+                const dotsContainer = carousel.querySelector(`[data-carousel-dots-for="${carouselId}"]`);
+                
+                // Assumes the last slide is a clone of the first for seamless looping
+                const slideCount = slides.length - 1; 
+                let currentIndex = 0;
+                let autoPlayTimer;
+
+                // Create dots
+                if (dotsContainer) {
+                    for (let i = 0; i < slideCount; i++) {
+                        const dot = document.createElement('button');
+                        dot.classList.add('carousel-dot');
+                        if (i === 0) dot.classList.add('active');
+                        dot.addEventListener('click', () => {
+                            goToSlide(i);
+                            resetAutoPlay();
+                        });
+                        dotsContainer.appendChild(dot);
+                    }
+                }
+                const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
+
+                function updateDots(index) {
+                    dots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+
+                function goToSlide(index, isInstant = false) {
+                    if (isInstant) {
+                        track.style.transition = 'none';
+                    } else {
+                        track.style.transition = 'transform 0.5s ease-in-out';
+                    }
+                    
+                    track.style.transform = `translateX(-${index * 100 / slides.length}%)`;
+                    currentIndex = index;
+
+                    // Handle loop
+                    if (currentIndex === slideCount) {
+                        updateDots(0); // Highlight first dot
+                        // After transition ends, jump back to start without animation
+                        setTimeout(() => {
+                            goToSlide(0, true);
+                        }, 500); // Must match CSS transition duration
+                    } else {
+                        updateDots(index);
+                    }
+                }
+
+                function nextSlide() {
+                    goToSlide(currentIndex + 1);
+                }
+
+                function resetAutoPlay() {
+                    clearInterval(autoPlayTimer);
+                    autoPlayTimer = setInterval(nextSlide, autoPlayInterval);
+                }
+                
+                // Start autoplay
+                autoPlayTimer = setInterval(nextSlide, autoPlayInterval);
+            }
+
+            // Initialize both carousels
+            initCarousel('event-carousel', 5000);
+            initCarousel('participation-carousel', 5500); // Stagger the timing
+
+        });
+    </script>
 </body>
 </html>
+
